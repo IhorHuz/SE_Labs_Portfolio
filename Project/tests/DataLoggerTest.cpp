@@ -21,3 +21,19 @@ TEST(DataLoggerTest, RetrievesCorrectTemperature)
 
     EXPECT_FLOAT_EQ(22.5, logger.getReading(0));
 }
+
+TEST(DataLoggerTest, BufferWrapsAroundAtLimit)
+{
+    DataLogger logger;
+
+    for (int i = 0; i < 100; i++)
+    {
+        logger.addReading(20.0);
+    }
+
+    logger.addReading(99.9);
+
+    EXPECT_EQ(100, logger.getLogCount());
+
+    EXPECT_FLOAT_EQ(99.9, logger.getReading(0));
+}
