@@ -13,3 +13,11 @@ TEST(DataLoggerTest, AddingReadingIncreasesCount)
     logger.addReading(22.5);
     EXPECT_EQ(1, logger.getLogCount());
 }
+
+TEST(DataLoggerTest, RetrievesCorrectTemperature)
+{
+    DataLogger logger;
+    logger.addReading(22.5);
+
+    EXPECT_FLOAT_EQ(22.5, logger.getReading(0));
+}

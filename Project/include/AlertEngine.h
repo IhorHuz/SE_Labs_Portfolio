@@ -16,13 +16,6 @@ public:
 
     bool checkTemperature(float currentTemp)
     {
-        if (currentTemp > maximumTemp || currentTemp < minimumTemp)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return (currentTemp > maximumTemp || currentTemp < minimumTemp);
     }
 };

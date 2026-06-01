@@ -2,9 +2,17 @@
 
 class DataLogger
 {
+private:
+    int currentCount = 0;
+
 public:
+    void addReading(float temperature)
+    {
+        currentCount++;
+    }
+
     int getLogCount()
     {
-        return 0;
+        return currentCount;
     }
 };
