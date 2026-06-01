@@ -7,6 +7,6 @@ public:
     void setThresholds(float minTemp, float maxTemp) {}
     bool checkTemperature(float currentTemp)
     {
-        return true;
+        return false;
     }
 };
