@@ -3,6 +3,7 @@
 #include "IAlertNotifier.h"
 #include "DataLogger.h"
 #include "AlertEngine.h"
+#include <string>
 
 class ClimateStation
 {
@@ -19,6 +20,12 @@ public:
     void update()
     {
         float currentTemp = sensor.readTemperature();
+
         logger.addReading(currentTemp);
+
+        if (engine.checkTemperature(currentTemp))
+        {
+            notifier.sendAlert("ALERT: Extreme temperature detected: " + std::to_string(currentTemp) + "C");
+        }
     }
 };
