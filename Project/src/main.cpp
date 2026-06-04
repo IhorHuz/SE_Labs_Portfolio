@@ -3,7 +3,7 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <ElegantOTA.h>
+#include <ArduinoOTA.h>
 #include <ESPmDNS.h>
 #include <LiquidCrystal_I2C.h>
 #include "SPIFFS.h"
@@ -75,7 +75,8 @@ setInterval(function(){
 void saveHistory()
 {
     File f = SPIFFS.open("/history.bin", FILE_WRITE);
-    if (!f) return;
+    if (!f)
+        return;
     f.write((const uint8_t *)tempHistory, sizeof(tempHistory));
     f.write((const uint8_t *)humHistory, sizeof(humHistory));
     f.close();
@@ -83,9 +84,11 @@ void saveHistory()
 
 void loadHistory()
 {
-    if (!SPIFFS.exists("/history.bin")) return;
+    if (!SPIFFS.exists("/history.bin"))
+        return;
     File f = SPIFFS.open("/history.bin", FILE_READ);
-    if (!f) return;
+    if (!f)
+        return;
     f.read((uint8_t *)tempHistory, sizeof(tempHistory));
     f.read((uint8_t *)humHistory, sizeof(humHistory));
     f.close();
@@ -97,7 +100,8 @@ void handleNewMessages(int numNewMessages)
     for (int i = 0; i < numNewMessages; i++)
     {
         String chat_id = String(bot.messages[i].chat_id);
-        if (chat_id != SECRET_CHAT_ID) continue;
+        if (chat_id != SECRET_CHAT_ID)
+            continue;
 
         String text = bot.messages[i].text;
         if (text == "/status")
@@ -142,7 +146,8 @@ void setup()
     if (!sensor.begin())
     {
         lcd.print("Sensor Error!");
-        while (1) delay(100);
+        while (1)
+            delay(100);
     }
 
     if (!SPIFFS.begin(true))
@@ -169,23 +174,17 @@ void setup()
     if (MDNS.begin("climate"))
         Serial.println("mDNS: http://climate.local");
 
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-    {
-        request->send_P(200, "text/html", index_html);
-    });
+    server.on("/", WebRequestMethod::HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(200, "text/html", index_html); });
 
-    server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request)
-    {
-        request->send(200, "text/plain", String(sensor.readTemperature()));
-    });
+    server.on("/temperature", WebRequestMethod::HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(200, "text/plain", String(sensor.readTemperature())); });
 
-    server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request)
-    {
-        request->send(200, "text/plain", String(sensor.readHumidity()));
-    });
+    server.on("/humidity", WebRequestMethod::HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(200, "text/plain", String(sensor.readHumidity())); });
 
-    server.on("/history", HTTP_GET, [](AsyncWebServerRequest *request)
-    {
+    server.on("/history", WebRequestMethod::HTTP_GET, [](AsyncWebServerRequest *request)
+              {
         String json = "{\"temp\":[";
         for (int i = 0; i < MAX_READINGS; i++)
         {
@@ -199,10 +198,9 @@ void setup()
             if (i < MAX_READINGS - 1) json += ",";
         }
         json += "]}";
-        request->send(200, "application/json", json);
-    });
+        request->send(200, "application/json", json); });
 
-    ElegantOTA.begin(&server);
+    ArduinoOTA.begin();
     server.begin();
 }
 
@@ -222,11 +220,12 @@ void loop()
             lcd.noBacklight();
             lcd.noDisplay();
         }
-        while (digitalRead(BUTTON_PIN) == LOW) delay(10);
+        while (digitalRead(BUTTON_PIN) == LOW)
+            delay(10);
         delay(50);
     }
 
-    ElegantOTA.loop();
+    ArduinoOTA.handle();
 
     if (millis() - lastSensorRead > sensorInterval)
     {
