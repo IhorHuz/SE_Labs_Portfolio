@@ -22,6 +22,25 @@ This portfolio is organized chronologically by lab assignments, moving from init
 - **`/Project`**
   Reserved for the core project files and associated assets for the final system deployment.
 
+## Deployment Guide — ESP32 Climate Station
+
+### Prerequisites
+
+- Hardware: ESP32 Dev Board, SHTC3 sensor, 16×2 I2C LCD, button on GPIO 4
+- Software: VS Code + [PlatformIO extension](https://platformio.org/install), or PlatformIO CLI
+- Telegram bot token and chat ID
+
+### Setup & Configuration
+
+1. Open the `Project/` folder in VS Code (PlatformIO auto-detects it)
+2. Copy your credentials into `Project/include/env.h`:
+   ```cpp
+   #define SECRET_SSID "your_wifi"
+   #define SECRET_PASS "your_password"
+   #define SECRET_BOT_TOKEN "your_token"
+   #define SECRET_CHAT_ID "your_chat_id"
+   ```
+
 ## Tools & Standards Used
 
 - **Documentation:** IEEE 830-1998 SRS Standards
